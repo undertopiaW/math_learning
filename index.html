@@ -1,0 +1,1084 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Math Learning</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;700;800&family=Noto+Sans+Thai:wght@400;500;700&family=Cutive+Mono&display=swap" rel="stylesheet">
+    <style>
+        /* CSS Variables for Theme */
+        :root {
+            --bg-body: #ffc282;
+            --bg-app: #262e36;
+            --bg-card: #313c47;
+            --accent: #f69c3a;
+            --text-main: #ffffff;
+            --text-sub: #a0a7af;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Outfit', 'Noto Sans Thai', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--bg-body);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-main);
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 800px;
+            width: 100%;
+            background: var(--bg-app);
+            border-radius: 40px;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.3);
+            padding: 40px;
+            margin: 20px;
+            position: relative;
+        }
+
+        .header {
+            text-align: left;
+            margin-bottom: 40px;
+        }
+
+        .header h1 {
+            font-size: 3rem;
+            font-weight: 800;
+            color: var(--text-main);
+            margin-bottom: 5px;
+            line-height: 1.1;
+        }
+
+        .header p {
+            color: var(--accent);
+            font-size: 1.2rem;
+            font-weight: 500;
+        }
+
+        .operation-selector {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 15px;
+            margin-bottom: 40px;
+        }
+
+        .op-btn {
+            padding: 20px;
+            border: none;
+            border-radius: 20px;
+            background: var(--bg-card);
+            color: var(--text-main);
+            font-size: 1.5rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .op-btn:hover {
+            background: #3e4c5b;
+            transform: translateY(-2px);
+        }
+
+        .op-btn.active {
+            background: var(--bg-card);
+            border: 2px solid var(--accent);
+            color: var(--accent);
+        }
+
+        .input-section {
+            display: grid;
+            grid-template-columns: 1fr auto 1fr auto auto auto;
+            gap: 15px;
+            align-items: center;
+            margin-bottom: 40px;
+            padding: 25px;
+            background: var(--bg-card);
+            border-radius: 25px;
+        }
+
+        .number-input {
+            padding: 15px 10px;
+            border: 2px solid transparent;
+            border-radius: 12px;
+            font-size: 1.5rem;
+            font-weight: 700;
+            text-align: center;
+            background: var(--bg-app);
+            color: var(--text-main);
+            transition: all 0.3s ease;
+            width: 100%;
+        }
+
+        .number-input:focus {
+            outline: none;
+            border-color: var(--accent);
+        }
+
+        .operation-symbol {
+            font-size: 2rem;
+            font-weight: 800;
+            color: var(--accent);
+            text-align: center;
+        }
+        
+        .action-btn {
+             padding: 15px;
+             height: 58px;
+             aspect-ratio: 1/1;
+             color: var(--text-main);
+             border: 2px solid var(--accent);
+             background: transparent;
+             border-radius: 12px;
+             font-size: 1.1rem;
+             font-weight: 600;
+             cursor: pointer;
+             transition: all 0.3s ease;
+             display: flex;
+             align-items: center;
+             justify-content: center;
+        }
+        
+        .action-btn:hover {
+            background: var(--accent);
+            color: var(--bg-app);
+            transform: translateY(-2px);
+        }
+
+        .calculate-btn {
+            padding: 15px 25px;
+            background: var(--accent);
+            color: var(--bg-app);
+            border: none;
+            border-radius: 12px;
+            font-size: 1.1rem;
+            font-weight: 800;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .calculate-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+        }
+
+        .visualization-area {
+            background: var(--bg-app);
+            border-radius: 30px;
+            padding: 40px;
+            margin-bottom: 30px;
+            min-height: 300px;
+            box-shadow: inset 0 2px 10px rgba(0,0,0,0.2);
+            overflow: hidden;
+        }
+
+        .number-line {
+            position: relative;
+            height: 100px;
+            margin: 50px 0;
+        }
+
+        .line {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 90%;
+            height: 4px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 2px;
+        }
+
+        .tick {
+            position: absolute;
+            width: 2px;
+            height: 20px;
+            background: var(--text-sub);
+            top: 50%;
+            transform: translateY(-50%);
+        }
+
+        .tick-label {
+            position: absolute;
+            top: calc(50% + 20px);
+            transform: translateX(-50%);
+            font-size: 0.9rem;
+            color: var(--text-sub);
+            font-weight: 500;
+        }
+        
+        /* New Jump Animation Styles */
+        .jump-marker {
+            position: absolute;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            border: 3px solid var(--accent);
+            background: transparent;
+            box-sizing: border-box;
+            bottom: -5%;
+            transform: translate(-50%, -50%);
+            transition: left 0.5s ease;
+            z-index: 5;
+        }
+
+        .jump-arc {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            overflow: visible;
+            z-index: 4;
+        }
+
+        .jump-path {
+            stroke: var(--accent);
+            stroke-width: 3;
+            fill: none;
+            stroke-dasharray: 1000;
+            stroke-dashoffset: 1000;
+            animation: draw-arc 1s ease-in-out forwards;
+        }
+
+        @keyframes draw-arc {
+            to {
+                stroke-dashoffset: 0;
+            }
+        }
+        
+        /* Arrow Styles for Multiply/Divide */
+        .arrow-line {
+            position: absolute;
+            height: 12px;
+            background: var(--accent);
+            top: 50%;
+            transform: translateY(-50%);
+            border-radius: 0;
+            transition: all 1.5s ease;
+            box-shadow: 0 4px 15px rgba(246, 156, 58, 0.4);
+        }
+        
+        .step-indicator {
+            position: absolute;
+            top: -45px;
+            background: var(--accent);
+            color: var(--bg-app);
+            padding: 5px 10px;
+            border-radius: 12px;
+            font-size: 0.9rem;
+            font-weight: 800;
+            transform: translateX(-50%);
+            opacity: 0;
+            transition: all 0.5s ease;
+            white-space: nowrap; 
+            width: auto;         
+            min-width: 0;        
+            text-align: center; 
+        }
+
+        .step-indicator.show {
+            opacity: 1;
+            transform: translateX(-50%) translateY(-5px);
+        }
+
+        /* Bar Animation Styles */
+        .or-divider {
+            text-align: center;
+            color: var(--text-sub);
+            font-size: 0.85rem;
+            font-weight: 600;
+            letter-spacing: 0.1em;
+            margin: 6px 0;
+            padding-bottom: 20px;
+        }
+
+        .bar-number-line {
+            position: relative;
+            height: 80px;
+            margin: 10px 0 4px;
+        }
+
+        .bar-line {
+            position: absolute;
+            top: 58px;
+            left: 5%;
+            right: 5%;
+            height: 3px;
+            background: rgba(255,255,255,0.12);
+            border-radius: 2px;
+        }
+
+        .bar-tick {
+            position: absolute;
+            width: 1px;
+            height: 10px;
+            background: var(--text-sub);
+            top: 53px;
+        }
+
+        .bar-tick-label {
+            position: absolute;
+            top: 66px;
+            transform: translateX(-50%);
+            font-size: 0.9rem;
+            color: var(--text-sub);
+            font-weight: 500;
+        }
+
+        .bar-segment {
+            position: absolute;
+            height: 20px;
+            border-radius: 2px;
+            width: 0;
+            transition: width var(--bar-speed, 0.8s) cubic-bezier(0.4,0,0.2,1), 
+                        left var(--bar-speed, 0.8s) cubic-bezier(0.4,0,0.2,1), 
+                        opacity var(--bar-speed, 0.8s) ease, 
+                        background-color var(--bar-speed, 0.8s) ease;
+        }
+
+        .bar-seg-grey {
+            background-color: #55606d !important;
+        }
+
+        .bar-result-circle {
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            border: 3px solid #fdcb6e;
+            background: transparent;
+            transform: translateX(-50%);
+            opacity: 0;
+            transition: opacity 0.4s ease;
+        }
+
+        .number-cards-section {
+            background: var(--bg-card);
+            border-radius: 30px;
+            padding: 25px;
+            margin-bottom: 30px;
+        }
+
+        .number-cards-container {
+            display: flex;
+            flex-direction: row;
+            flex-wrap: nowrap;
+            gap: 12px;
+            justify-content: center;
+            align-items: center;
+            width: 100%;
+            overflow-x: auto;
+            padding: 10px 0;
+        }
+
+        .cards-title {
+            text-align: center;
+            color: var(--text-sub);
+            font-size: 1rem;
+            font-weight: 500;
+            margin-bottom: 15px;
+        }
+
+        .number-card {
+            min-width: 50px;
+            height: 50px;
+            background: var(--bg-app);
+            border: 2px solid transparent;
+            border-radius: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: var(--text-main);
+            cursor: grab;
+            transition: all 0.3s ease;
+            user-select: none;
+        }
+
+        .number-card:hover {
+            transform: translateY(-3px);
+            border-color: var(--accent);
+            color: var(--accent);
+        }
+
+        .number-card:active {
+            cursor: grabbing;
+            transform: scale(1.1);
+        }
+
+        .number-card.negative {
+            color: #ff7675;
+        }
+
+        .number-card.positive {
+            color: #55efc4;
+        }
+
+        .drop-zone {
+            position: relative;
+            border: 2px dashed rgba(255,255,255,0.1);
+            border-radius: 12px;
+            transition: all 0.3s ease;
+            min-height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0;
+        }
+
+        .drop-zone.drag-over {
+            border-color: var(--accent);
+            background: rgba(246, 156, 58, 0.1);
+        }
+
+        .result-display {
+            text-align: center;
+            margin-top: 30px;
+            padding: 30px;
+            background: var(--bg-card);
+            border-radius: 25px;
+        }
+
+        .result-text {
+            font-size: 2.2rem;
+            font-weight: 800;
+            color: var(--text-main);
+            margin-bottom: 10px;
+        }
+
+        .explanation {
+            color: var(--text-sub);
+            font-size: 1.1rem;
+            line-height: 1.6;
+            max-width: 500px;
+            margin: 0 auto;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 30px 20px;
+                border-radius: 0;
+                margin: 0;
+            }
+            
+            .input-section {
+                grid-template-columns: 1fr;
+                gap: 15px;
+            }
+            
+            .header h1 {
+                font-size: 2.5rem;
+            }
+
+            .operation-selector {
+                grid-template-columns: repeat(4, 1fr);
+            }
+        }
+
+        .number-input::-webkit-inner-spin-button,
+        .number-input::-webkit-outer-spin-button {
+            opacity: 1;
+            height: 30px;
+            cursor: pointer;
+        }
+
+        .number-input[type="number"] {
+            -moz-appearance: textfield;
+            appearance: textfield;
+        }
+
+        .number-input {
+            padding-right: 5px !important;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Math Learning</h1>
+            <p>Interactive Number Line Visualization</p>
+        </div>
+
+        <div class="number-cards-section">
+            <div class="cards-title">ลากหรือคลิกตัวเลขที่ต้องการ</div>
+            <div id="number-cards-container" class="number-cards-container"></div>
+        </div>
+        
+
+        <div class="operation-selector">
+            <button class="op-btn active" data-op="add">
+                <i class="fas fa-plus"></i>
+            </button>
+            <button class="op-btn" data-op="subtract">
+                <i class="fas fa-minus"></i>
+            </button>
+            <button class="op-btn" data-op="multiply">
+                <i class="fas fa-times"></i>
+            </button>
+            <button class="op-btn" data-op="divide">
+                <i class="fas fa-divide"></i>
+            </button>
+        </div>
+
+        <div class="input-section">
+            <div class="drop-zone" id="drop-zone-1">
+                <input type="number" class="number-input" id="num1" value="6" placeholder="ตัวเลขที่ 1" step="1">
+            </div>
+            <span class="operation-symbol" id="op-symbol">+</span>
+            <div class="drop-zone" id="drop-zone-2">
+                <input type="number" class="number-input" id="num2" value="-2" placeholder="ตัวเลขที่ 2" step="1">
+            </div>
+             <button class="action-btn" onclick="swapNumbers()" title="สลับตัวเลข">
+                <i class="fas fa-exchange-alt"></i>
+            </button>
+            <span class="operation-symbol">=</span>
+            <button class="calculate-btn" onclick="calculate()">
+                <i class="fas fa-play">Calculate</i>
+            </button>
+        </div>
+
+        <div class="visualization-area" id="visualization">
+            <div class="result-display">
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentOperation = 'add';
+        const operationSymbols = {
+            add: '+',
+            subtract: '−',
+            multiply: '×',
+            divide: '÷'
+        };
+
+        document.querySelectorAll('.op-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                document.querySelectorAll('.op-btn').forEach(b => b.classList.remove('active'));
+                this.classList.add('active');
+                currentOperation = this.dataset.op;
+                document.getElementById('op-symbol').textContent = operationSymbols[currentOperation];
+            });
+        });
+
+        function parseFractionOrDecimal(str) {
+            str = (str || '').trim();
+            if (str.includes('/')) {
+                const [numerator, denominator] = str.split('/').map(Number);
+                if (!isNaN(numerator) && !isNaN(denominator) && denominator !== 0) {
+                    return numerator / denominator;
+                }
+            }
+            const num = Number(str);
+            return isNaN(num) ? 0 : num;
+        }
+
+        
+        function swapNumbers() {
+            const num1Input = document.getElementById('num1');
+            const num2Input = document.getElementById('num2');
+            [num1Input.value, num2Input.value] = [num2Input.value, num1Input.value];
+            calculate();
+        }
+
+        function calculate() {
+            const num1 = parseFractionOrDecimal(document.getElementById('num1').value);
+            const num2 = parseFractionOrDecimal(document.getElementById('num2').value);
+
+            let result;
+            switch(currentOperation) {
+                case 'add':      result = num1 + num2; break;
+                case 'subtract': result = num1 - num2; break;
+                case 'multiply': result = num1 * num2; break;
+                case 'divide':   result = num2 !== 0 ? num1 / num2 : 'ไม่สามารถหารด้วยศูนย์'; break;
+            }
+            
+            visualizeNumberLine(num1, num2, result, currentOperation);
+        }
+        
+        function visualizeNumberLine(num1, num2, result, operation) {
+            const visualization = document.getElementById('visualization');
+
+            const barSection = (operation === 'add' || operation === 'subtract') ? `
+                <div class="or-divider">OR</div>
+                <div class="bar-number-line" id="bar-number-line"></div>
+            ` : '';
+            
+            visualization.innerHTML = `
+                <div style="text-align: center; margin-bottom: 30px;">
+                    <h3 style="color: var(--accent); font-size: 1.8rem; margin-bottom: 20px;">
+                        ${num1} ${operationSymbols[operation]} ${num2} = ${result}
+                    </h3>
+                </div>
+                <div class="number-line" id="number-line"></div>
+                ${barSection}
+                <div class="result-display">
+                    <div class="result-text">ผลลัพธ์: ${result}</div>
+                    <div class="explanation">${getExplanation(num1, num2, result, operation)}</div>
+                </div>
+            `;
+
+    let minValue, maxValue;
+    
+    if (operation === 'multiply' || operation === 'divide') {
+        const values = [0, num1, -num1, result];
+        minValue = Math.min(...values);
+        maxValue = Math.max(...values);
+    } else {
+        const effNum2 = operation === 'subtract' ? -num2 : num2;
+        minValue = Math.min(0, num1, effNum2, typeof result === 'number' ? result : 0);
+        maxValue = Math.max(0, num1, effNum2, typeof result === 'number' ? result : 0);
+    }
+
+    createNumberLine(minValue, maxValue);
+    
+    setTimeout(() => animatePointer(num1, num2, result, operation, minValue, maxValue), 200);
+
+    if (operation === 'add' || operation === 'subtract') {
+        setTimeout(() => animateBars(num1, num2, result, operation, minValue, maxValue), 300);
+    }
+}
+        function createNumberLine(min, max) {
+            const numberLine = document.getElementById('number-line');
+            if (!numberLine) return;
+            const range = Math.abs(max - min);
+            
+            numberLine.innerHTML = '<div class="line"></div>';
+            
+            // Adjust label density based on range
+            let step;
+            if (range >= 500) step = 100;
+            else if (range >= 200) step = 10;
+            else if (range >= 100) step = 5;
+            else if (range >= 25) step = 2;
+            else if (range >= 2) step = 1;
+            else if (range >= 0.1) step = 0.1;  // เพิ่มเงื่อนไขสำหรับค่าทศนิยม
+            else step = 0.01;                    // ค่าน้อยมาก
+
+            // สร้าง ticks และ labels
+            for (let i = Math.ceil(min / step) * step; i <= Math.floor(max / step) * step; i += step) {
+                const position = 5 + ((i - min) / range) * 90;
+                if (position < 0 || position > 100) continue;
+
+                const tick = document.createElement('div');
+                tick.className = 'tick';
+                tick.style.left = `${position}%`;
+                
+                const label = document.createElement('div');
+                label.className = 'tick-label';
+                label.textContent = Number(i.toFixed(2)); // แสดงทศนิยม 2 ตำแหน่ง
+                label.style.left = `${position}%`;
+                
+                numberLine.appendChild(tick);
+                numberLine.appendChild(label);
+            }
+        }
+
+        function animatePointer(num1, num2, result, operation, min, max) {
+            const numberLine = document.getElementById('number-line');
+            if (!numberLine) return;
+
+            const range = max - min;
+            const getPosition = (value) => 5 + ((value - min) / range) * 90;
+
+            if (operation === 'add' || operation === 'subtract') {
+                animateJumps(num1, num2, operation, getPosition);
+            } else {
+                animateArrow(num1, num2, result, operation, getPosition);
+            }
+        }
+
+        function animateJumps(num1, num2, operation, getPosition) {
+            const numberLine = document.getElementById('number-line');
+            const step = (operation === 'add' ? 1 : -1) * (num2 >= 0 ? 1 : -1);
+            const totalSteps = Math.abs(num2);
+            
+            // Limit total duration to 6 seconds, but ensure at least 20ms between jumps
+            const maxDuration = 6000;
+            const delayPerJump = Math.max(20, Math.min(500, maxDuration / totalSteps));
+
+            let startMarker = document.createElement('div');
+            startMarker.className = 'jump-marker';
+            startMarker.style.left = `${getPosition(num1)}%`;
+            numberLine.appendChild(startMarker);
+
+            for (let i = 0; i < totalSteps; i++) {
+                setTimeout(() => {
+                    const startVal = num1 + (i * step);
+                    const endVal = num1 + ((i + 1) * step);
+                    
+                    const startX = getPosition(startVal);
+                    const endX = getPosition(endVal);
+
+                    startMarker.style.left = `${endX}%`;
+                    startMarker.style.transition = `left ${delayPerJump}ms linear`;
+                    
+                    const arcHeight = Math.abs(endX - startX) > 10 ? 60 : 40;
+                    const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+                    svg.setAttribute('class', 'jump-arc');
+                    svg.setAttribute('viewBox', `0 0 ${numberLine.offsetWidth} ${numberLine.offsetHeight}`);
+                    svg.style.width = numberLine.offsetWidth + 'px';
+                    svg.style.height = numberLine.offsetHeight + 'px';
+                    
+                    const lineY = numberLine.offsetHeight / 2;
+                    const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+                    const d = `M ${startX/100 * numberLine.offsetWidth} ${lineY} C ${startX/100 * numberLine.offsetWidth} ${lineY - arcHeight}, ${endX/100 * numberLine.offsetWidth} ${lineY - arcHeight}, ${endX/100 * numberLine.offsetWidth} ${lineY}`;
+                    path.setAttribute('d', d);
+                    path.setAttribute('class', 'jump-path');
+                    path.style.animationDuration = `${delayPerJump}ms`;
+                    path.style.animationTimingFunction = 'linear';
+                    
+                    svg.appendChild(path);
+                    numberLine.appendChild(svg);
+                    
+                }, i * delayPerJump);
+            }
+        }
+
+        function animateBars(num1, num2, result, operation, min_val, max_val) {
+            const container = document.getElementById('bar-number-line');
+            if (!container) return;
+
+            // --- ความไวการแสดงผล (Animation Speed Config) ---
+            const SPEED_CONFIG = {
+                barTransition: 2.4,   // ความเร็วในการยืด/เลื่อนแท่ง (วินาที) สำหรับ CSS
+                phase1Delay: 100,      // ดีเลย์เริ่มยืดเส้น (มิลลิวินาที)
+                phase2Delay: 2400,    // ดีเลย์ก่อนเลื่อนเส้นมาซ้อน (มิลลิวินาที)
+                phase3Delay: 4800,    // ดีเลย์ก่อนจางส่วนที่ซ้อน/เปลี่ยนสีเทา (มิลลิวินาที)
+                fadeEffectDelay: 1600, // ระยะเวลาในการจางหาย (มิลลิวินาที)
+                resultCircleDelay: 3600 // ดีเลย์ก่อนวงกลมคำตอบจะปรากฏใน Phase 3 (มิลลิวินาที)
+            };
+
+            // ประยุกต์ใช้ความเร็วกับ CSS
+            container.style.setProperty('--bar-speed', `${SPEED_CONFIG.barTransition}s`);
+
+            const range = max_val - min_val;
+            const getPct = (v) => 5 + ((v - min_val) / range) * 90;
+
+            // Draw base line
+            const line = document.createElement('div');
+            line.className = 'bar-line';
+            container.appendChild(line);
+
+            // Dynamic ticks logic
+            let step;
+            if (range >= 500) step = 100;
+            else if (range >= 200) step = 10;
+            else if (range >= 100) step = 5;
+            else if (range >= 25) step = 2;
+            else if (range >= 2) step = 1;
+            else if (range >= 0.1) step = 0.1;
+            else step = 0.01;
+
+            // Draw ticks and labels
+            for (let i = Math.ceil(min_val / step) * step; i <= Math.floor(max_val / step) * step; i += step) {
+                const pct = getPct(i);
+                if (pct < 0 || pct > 100) continue;
+
+                const tick = document.createElement('div');
+                tick.className = 'bar-tick';
+                tick.style.left = `${pct}%`;
+                container.appendChild(tick);
+
+                const label = document.createElement('div');
+                label.className = 'bar-tick-label';
+                label.textContent = Number(i.toFixed(2));
+                label.style.left = `${pct}%`;
+                
+                if (Math.abs(i) < 1e-10) { // i === 0
+                    label.style.color = 'rgba(255,255,255,0.7)';
+                    label.style.fontWeight = '700';
+                    tick.style.height = '14px';
+                    tick.style.top = '31px';
+                }
+                container.appendChild(label);
+            }
+
+            // Zero position circle
+            const zeroPct = getPct(0);
+            const zeroCircleEl = document.createElement('div');
+            zeroCircleEl.style.cssText = `
+                position:absolute; width:14px; height:14px; border-radius:50%;
+                border:2px solid rgba(255,255,255,0.4); background:transparent;
+                top:31px; left:${zeroPct}%; transform:translateX(-50%);
+            `;
+            container.appendChild(zeroCircleEl);
+
+            // Calculation logic
+            const v1 = num1;
+            const v2 = operation === 'subtract' ? -num2 : num2;
+            const res = v1 + v2;
+
+            const colorV1 = '#00b894'; // Teal
+            const colorV2 = '#e17055'; // Orange
+
+            let long_v, short_v, long_c, short_c;
+            if (Math.abs(v1) >= Math.abs(v2)) {
+                long_v = v1; short_v = v2; long_c = colorV1; short_c = colorV2;
+            } else {
+                long_v = v2; short_v = v1; long_c = colorV2; short_c = colorV1;
+            }
+
+            function setBarPos(el, valA, valB) {
+                const minV = Math.min(valA, valB);
+                const maxV = Math.max(valA, valB);
+                el.style.left = `${getPct(minV)}%`;
+                el.style.width = `${getPct(maxV) - getPct(minV)}%`;
+            }
+
+            // Create initial bars
+            const topBar = document.createElement('div');
+            topBar.className = 'bar-segment';
+            topBar.style.backgroundColor = long_c;
+            topBar.style.top = '11px';
+            topBar.style.left = `${zeroPct}%`;
+            topBar.style.width = '0%';
+            container.appendChild(topBar);
+
+            const botBar = document.createElement('div');
+            botBar.className = 'bar-segment';
+            botBar.style.backgroundColor = short_c;
+            botBar.style.top = '33px';
+            botBar.style.left = `${zeroPct}%`;
+            botBar.style.width = '0%';
+            container.appendChild(botBar);
+
+            // Phase 1: Draw from 0
+            setTimeout(() => {
+                setBarPos(topBar, 0, long_v);
+                setBarPos(botBar, 0, short_v);
+            }, SPEED_CONFIG.phase1Delay);
+
+            // Phase 2: Shift longer bar
+            setTimeout(() => {
+                setBarPos(topBar, short_v, short_v + long_v);
+            }, SPEED_CONFIG.phase2Delay);
+
+            // Phase 3: Fade overlap if signs different
+            setTimeout(() => {
+                const signsDifferent = (long_v > 0 && short_v < 0) || (long_v < 0 && short_v > 0);
+                
+                if (signsDifferent) {
+                    // Hide monolithic top bar
+                    topBar.style.display = 'none';
+
+                    // Replace with two segments: overlap and remain
+                    const topOverlap = document.createElement('div');
+                    topOverlap.className = 'bar-segment';
+                    topOverlap.style.backgroundColor = long_c;
+                    topOverlap.style.top = '11px';
+                    setBarPos(topOverlap, 0, short_v);
+                    container.appendChild(topOverlap);
+
+                    const topRemain = document.createElement('div');
+                    topRemain.className = 'bar-segment';
+                    topRemain.style.backgroundColor = long_c;
+                    topRemain.style.top = '11px';
+                    setBarPos(topRemain, 0, short_v + long_v);
+                    container.appendChild(topRemain);
+
+                    // Force browser reflow to prevent animation skipping
+                    void topOverlap.offsetWidth;
+
+                    // Turn grey
+                    topOverlap.classList.add('bar-seg-grey');
+                    botBar.classList.add('bar-seg-grey');
+
+                    // Fade out
+                    setTimeout(() => {
+                        topOverlap.style.opacity = '0';
+                        botBar.style.opacity = '0';
+                    }, SPEED_CONFIG.fadeEffectDelay);
+
+                    // Show Result
+                    setTimeout(() => showResultCircle(), SPEED_CONFIG.resultCircleDelay);
+                } else {
+                    showResultCircle();
+                }
+            }, SPEED_CONFIG.phase3Delay);
+
+            function showResultCircle() {
+                const resCir = document.createElement('div');
+                resCir.className = 'bar-result-circle';
+                resCir.style.left = `${getPct(res)}%`;
+                resCir.style.top = '48px'; // Aligns vertically spanning 48->68 (center is 58px)
+                container.appendChild(resCir);
+                setTimeout(() => resCir.style.opacity = '1', 50);
+            }
+        }
+
+       function animateArrow(num1, num2, result, operation, getPosition) {
+            const numberLine = document.getElementById('number-line');
+            if (typeof result !== 'number') return;
+
+            const arrow = document.createElement('div');
+            arrow.className = 'arrow-line';
+            arrow.style.transition = 'width 0.5s ease, transform 0.5s ease';
+
+            const stepIndicator = document.createElement('div');
+            stepIndicator.className = 'step-indicator';
+            stepIndicator.textContent = num1;
+
+            const zeroPos = getPosition(0);
+            const num1Pos = getPosition(num1);
+            const resultPos = getPosition(result);
+
+            const initialDir = num1 < 0 ? -1 : 1;
+            const needFlip = num2 < 0;
+
+            // 1. Initial State: Show 0 to num1
+            arrow.style.left = `${zeroPos}%`;
+            arrow.style.width = '0%';
+            arrow.style.transformOrigin = 'left center';
+            arrow.style.transform = initialDir === -1 ? 'scaleX(-1)' : 'scaleX(1)';
+
+            // Function to counter-flip the label if parent is flipped
+            const updateLabelFlip = (parentFlip) => {
+                stepIndicator.style.transform = `translateX(-50%) scaleX(${parentFlip})`;
+            };
+            updateLabelFlip(initialDir);
+
+            arrow.appendChild(stepIndicator);
+            numberLine.appendChild(arrow);
+
+            // Animate to num1
+            setTimeout(() => {
+                arrow.style.width = `${Math.abs(num1Pos - zeroPos)}%`;
+                stepIndicator.classList.add('show');
+            }, 50);
+
+            if ((operation === 'multiply' || operation === 'divide')) {
+                if (needFlip) {
+                    // 2. Flip the vector while keeping original length
+                    setTimeout(() => {
+                        arrow.style.transform = 'scaleX(0)'; // Shrink to center before flip for better visual
+                    }, 2000);
+
+                    setTimeout(() => {
+                        const flipDir = initialDir === -1 ? 1 : -1;
+                        arrow.style.transform = `scaleX(${flipDir})`;
+                        updateLabelFlip(flipDir);
+                        stepIndicator.textContent = -num1;
+                    }, 2500);
+
+                    setTimeout(() => {
+                        arrow.style.width = `${Math.abs(num1Pos - zeroPos)}%`; // Grow back to original length in new direction
+                    }, 2600);
+
+                    // 4. Scale to final result
+                    setTimeout(() => {
+                        arrow.style.transition = 'width 1s ease';
+                        arrow.style.width = `${Math.abs(resultPos - zeroPos)}%`;
+                        stepIndicator.textContent = result;
+                    }, 4000);
+
+                } else {
+                    // 2. Pause at num1 for 1.5 seconds, then scale to result
+                    setTimeout(() => {
+                        arrow.style.transition = 'width 1s ease';
+                        arrow.style.width = `${Math.abs(resultPos - zeroPos)}%`;
+                        stepIndicator.textContent = result;
+                    }, 2000);
+                }
+            }
+        }
+
+        function getExplanation(num1, num2, result, operation) {
+            switch(operation) {
+                case 'add':
+                    return `เริ่มต้นที่ ${num1} แล้วเคลื่อนไปข้างหน้า ${num2} หน่วย ${num2 < 0 ? '(คือการถอยหลัง)' : ''} บนเส้นจำนวน ผลลัพธ์คือ ${result}`;
+                case 'subtract':
+                    return `เริ่มต้นที่ ${num1} แล้วถอยหลัง ${num2} หน่วย ${num2 < 0 ? '(คือการเคลื่อนไปข้างหน้า)' : ''} บนเส้นจำนวน ผลลัพธ์คือ ${result}`;
+                case 'multiply':
+                    return `การคูณ ${num1} ด้วย ${num2} คือการนำระยะทางจาก 0 ถึง ${num1} มาขยายขนาดเป็น ${Math.abs(num2)} เท่า ${num2 < 0 ? 'และกลับทิศทาง' : ''} ได้ผลลัพธ์คือ ${result}`;
+                case 'divide':
+                    return typeof result === 'number' ? 
+                           `การหาร ${num1} ด้วย ${num2} คือการนำระยะทางจาก 0 ถึง ${num1} มาย่อขนาดลง ${Math.abs(num2)} เท่า ${num2 < 0 ? 'และกลับทิศทาง' : ''} ได้ผลลัพธ์คือ ${result.toFixed(2)}` :
+                           'ไม่สามารถหารด้วยศูนย์ได้';
+                default:
+                    return '';
+            }
+        }
+        
+        function init() {
+            createNumberCards();
+            setupDragAndDrop();
+            // Call calculate on init to show a default example
+            calculate(); 
+        }
+
+        function createNumberCards() {
+            const container = document.getElementById('number-cards-container');
+            container.innerHTML = '';
+            
+            for (let i = -9; i <= 9; i++) {
+                const card = document.createElement('div');
+                card.className = `number-card ${i < 0 ? 'negative' : i > 0 ? 'positive' : ''}`;
+                card.textContent = i;
+                card.draggable = true;
+                card.dataset.value = i;
+                
+                card.addEventListener('click', function() {
+                    const activeInput = document.activeElement.matches('.number-input') 
+                        ? document.activeElement 
+                        : document.getElementById('num1');
+                    activeInput.value = i;
+                });
+                
+                card.addEventListener('dragstart', function(e) {
+                    e.dataTransfer.setData('text/plain', i);
+                    setTimeout(() => card.style.visibility = 'hidden', 1);
+                });
+                
+                card.addEventListener('dragend', function() {
+                    card.style.visibility = 'visible';
+                });
+                
+                container.appendChild(card);
+            }
+        }
+
+        function setupDragAndDrop() {
+            const dropZones = document.querySelectorAll('.drop-zone');
+            
+            dropZones.forEach(zone => {
+                zone.addEventListener('dragover', function(e) {
+                    e.preventDefault();
+                    zone.classList.add('drag-over');
+                });
+                
+                zone.addEventListener('dragleave', function() {
+                    zone.classList.remove('drag-over');
+                });
+                
+                zone.addEventListener('drop', function(e) {
+                    e.preventDefault();
+                    zone.classList.remove('drag-over');
+                    const value = e.dataTransfer.getData('text/plain');
+                    const input = zone.querySelector('.number-input');
+                    if (input) {
+                        input.value = value;
+                    }
+                });
+            });
+        }
+
+        document.addEventListener('DOMContentLoaded', init);
+    </script>
+</body>
+</html>
